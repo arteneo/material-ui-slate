@@ -7,7 +7,7 @@ import EditorType from "@arteneo/material-ui-slate/definitions/EditorType";
 import ElementType from "@arteneo/material-ui-slate/definitions/ElementType";
 import Toolbar from "@arteneo/material-ui-slate/components/Toolbar";
 import SlatePluginsType from "@arteneo/material-ui-slate/definitions/SlatePluginsType";
-import { serialize, deserialize } from "@arteneo/material-ui-slate/utils/slate";
+import { deserialize } from "@arteneo/material-ui-slate/utils/slate";
 import RenderElement from "@arteneo/material-ui-slate/components/RenderElement";
 import RenderLeaf from "@arteneo/material-ui-slate/components/RenderLeaf";
 import { jsx } from "slate-hyperscript";
@@ -21,11 +21,15 @@ declare module "slate" {
 }
 
 interface SlateProps {
-    initialHtml?: string;
     plugins: SlatePluginsType;
+    onChange?: (value: Descendant[]) => void;
+    initialHtml?: string;
+    disabled?: boolean;
 }
 
-const Slate = ({ initialHtml, plugins }: SlateProps) => {
+const Slate = ({ plugins, onChange, initialHtml, disabled = false }: SlateProps) => {
+    const emptyValue = [jsx("element", { type: "paragraph" }, [{ text: "" }])];
+
     const getInitialValue = (): Descendant[] => {
         if (typeof initialHtml !== "undefined") {
             const document = new DOMParser().parseFromString(initialHtml, "text/html");
@@ -36,7 +40,7 @@ const Slate = ({ initialHtml, plugins }: SlateProps) => {
             }
         }
 
-        return [jsx("element", { type: "paragraph" }, [{ text: "" }])];
+        return emptyValue;
     };
 
     const editor = React.useMemo(() => {
@@ -51,64 +55,42 @@ const Slate = ({ initialHtml, plugins }: SlateProps) => {
         return editor;
     }, []);
 
-    const [value, setValue] = React.useState<Descendant[]>(getInitialValue());
-    console.log("🚀 ~ file: Slate.tsx ~ line 231 ~ Slate ~ value", value);
+    const [value, setValue] = React.useState<Descendant[]>(emptyValue);
+
+    React.useEffect(() => updateInitialValue(), [initialHtml]);
+
+    const updateInitialValue = () => {
+        setValue(getInitialValue());
+    };
 
     const renderElement = React.useCallback((props) => <RenderElement {...{ plugins, ...props }} />, []);
     const renderLeaf = React.useCallback((props) => <RenderLeaf {...{ plugins, ...props }} />, []);
 
-    const onChange = (change: Descendant[]) => {
-        setValue(change);
+    const internalOnChange = (value: Descendant[]) => {
+        setValue(value);
+
+        if (typeof onChange !== "undefined") {
+            onChange(value);
+        }
     };
 
-    const serializedHtml = serialize(value, plugins);
-
     return (
-        <>
-            <h1>Test</h1>
-
-            <SlateReact
+        <SlateReact
+            {...{
+                editor,
+                value,
+                onChange: internalOnChange,
+            }}
+        >
+            <Toolbar {...{ plugins, disabled }} />
+            <Editable
                 {...{
-                    editor,
-                    value,
-                    onChange,
+                    renderElement,
+                    renderLeaf,
+                    readOnly: disabled,
                 }}
-            >
-                <Toolbar {...{ plugins }} />
-                <Editable
-                    {...{
-                        renderElement,
-                        renderLeaf,
-                    }}
-                />
-            </SlateReact>
-
-            {typeof initialHtml !== "undefined" && (
-                <>
-                    <br />
-                    <br />
-                    <h1>Initial HTML looks</h1>
-                    <div dangerouslySetInnerHTML={{ __html: initialHtml }} />
-                    <br />
-                    <br />
-                    <h1>Initial HTML code</h1>
-                    <code>{initialHtml}</code>{" "}
-                </>
-            )}
-
-            {typeof serializedHtml !== "undefined" && (
-                <>
-                    <br />
-                    <br />
-                    <h1>Serialized HTML looks</h1>
-                    <div dangerouslySetInnerHTML={{ __html: serializedHtml }} />
-                    <br />
-                    <br />
-                    <h1>Serialized HTML code</h1>
-                    <code>{serializedHtml}</code>
-                </>
-            )}
-        </>
+            />
+        </SlateReact>
     );
 };
 

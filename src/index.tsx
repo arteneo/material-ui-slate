@@ -1,5 +1,20 @@
-import Slate from "@arteneo/material-ui-slate/components/Slate";
+import { Descendant } from "slate";
+import Slate, { SlateProps } from "@arteneo/material-ui-slate/components/Slate";
 import SlatePluginsType from "@arteneo/material-ui-slate/definitions/SlatePluginsType";
+import {
+    isElementActive,
+    isMarkActive,
+    toggleMark,
+    isList,
+    toggleElement,
+    deserialize,
+    deserializeElements,
+    deserializeInlines,
+    serialize,
+    serializeNode,
+    serializeInlines,
+    serializeElements,
+} from "@arteneo/material-ui-slate/utils/slate";
 import Body from "@arteneo/material-ui-slate/plugins/Body";
 import Br from "@arteneo/material-ui-slate/plugins/Br";
 import Bold from "@arteneo/material-ui-slate/plugins/Bold";
@@ -18,8 +33,22 @@ import Undo from "@arteneo/material-ui-slate/plugins/Undo";
 import Redo from "@arteneo/material-ui-slate/plugins/Redo";
 
 export {
+    Descendant,
     Slate,
+    SlateProps,
     SlatePluginsType,
+    isElementActive,
+    isMarkActive,
+    toggleMark,
+    isList,
+    toggleElement,
+    deserialize,
+    deserializeElements,
+    deserializeInlines,
+    serialize,
+    serializeNode,
+    serializeInlines,
+    serializeElements,
     Body,
     Br,
     Bold,
