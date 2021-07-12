@@ -1,1 +1,2 @@
-# material-ui-slate
+# Material UI Slate
+Readme in progress

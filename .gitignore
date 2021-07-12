@@ -1,0 +1,15 @@
+node_modules
+package-lock.json
+yarn.lock
+yarn-error.log
+.docz
+dist
+
+###> docz ###
+!/public/*
+/public/*
+!/public/.gitkeep
+###< docz ###
+###> docz public assets ###
+!/public/assets
+###< docz public assets ###
