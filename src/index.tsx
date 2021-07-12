@@ -8,6 +8,7 @@ import Strikethrough from "@arteneo/material-ui-slate/plugins/Strikethrough";
 import Underline from "@arteneo/material-ui-slate/plugins/Underline";
 import Color from "@arteneo/material-ui-slate/plugins/Color";
 import Link from "@arteneo/material-ui-slate/plugins/Link";
+import Image from "@arteneo/material-ui-slate/plugins/Image";
 import Nbsp from "@arteneo/material-ui-slate/plugins/Nbsp";
 import Heading from "@arteneo/material-ui-slate/plugins/Heading";
 import Paragraph from "@arteneo/material-ui-slate/plugins/Paragraph";
@@ -28,6 +29,7 @@ export {
     Underline,
     Color,
     Link,
+    Image,
     Nbsp,
     Heading,
     Paragraph,
