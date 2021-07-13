@@ -9,9 +9,12 @@ import DeserializeElementType from "@arteneo/material-ui-slate/definitions/Deser
 import DeserializeType from "@arteneo/material-ui-slate/definitions/DeserializeType";
 import TextType from "@arteneo/material-ui-slate/definitions/TextType";
 
-export const isElementActive = (editor: Editor, format: ElementTypeType) => {
+// Options are not typed
+// eslint-disable-next-line
+export const isElementActive = (editor: Editor, format: ElementTypeType, options?: any) => {
     const [match] = Editor.nodes(editor, {
         match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === format,
+        ...options,
     });
 
     return !!match;
@@ -145,14 +148,7 @@ export const serializeNode = (node: Descendant, plugins: SlatePluginsType): unde
 
         result = serializeInlines(node, result, plugins);
 
-        let style = "";
-        const hasStyles = Object.keys(result.styles).length > 0;
-        if (hasStyles) {
-            const styleList = Object.entries(result.styles).map(([style, value]) => {
-                return style + ": " + value + ";";
-            });
-            style = " style='" + styleList.join(" ") + "'";
-        }
+        const styleAttr = getStyleAttr(result.styles);
 
         let attribute = "";
         const hasAttributes = Object.keys(result.attributes).length > 0;
@@ -173,12 +169,12 @@ export const serializeNode = (node: Descendant, plugins: SlatePluginsType): unde
 
         let component = undefined;
 
-        if ((hasStyles || hasAttributes) && typeof component === "undefined") {
+        if ((styleAttr || hasAttributes) && typeof component === "undefined") {
             component = "span";
         }
 
         if (component) {
-            return "<" + component + style + attribute + ">" + result.text + "</" + component + ">";
+            return "<" + component + styleAttr + attribute + ">" + result.text + "</" + component + ">";
         }
 
         return result.text;
@@ -216,4 +212,17 @@ export const serializeElements = (node: ElementType, children: string, plugins: 
     }
 
     return result;
+};
+
+export const getStyleAttr = (style: React.CSSProperties): string => {
+    if (Object.keys(style).length === 0) {
+        return "";
+    }
+
+    const styleList = Object.entries(style).map(([style, value]) => {
+        // Convert i.e. fontSize to font-size
+        return style.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`) + ": " + value + ";";
+    });
+
+    return " style='" + styleList.join(" ") + "'";
 };

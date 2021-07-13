@@ -30,6 +30,7 @@ import {
     serializeNode,
     serializeInlines,
     serializeElements,
+    getStyleAttr,
 } from "@arteneo/material-ui-slate/utils/slate";
 import Body from "@arteneo/material-ui-slate/plugins/Body";
 import Br from "@arteneo/material-ui-slate/plugins/Br";
@@ -39,6 +40,7 @@ import Strikethrough from "@arteneo/material-ui-slate/plugins/Strikethrough";
 import Underline from "@arteneo/material-ui-slate/plugins/Underline";
 import Color from "@arteneo/material-ui-slate/plugins/Color";
 import Link from "@arteneo/material-ui-slate/plugins/Link";
+import Image from "@arteneo/material-ui-slate/plugins/Image";
 import Nbsp from "@arteneo/material-ui-slate/plugins/Nbsp";
 import Heading from "@arteneo/material-ui-slate/plugins/Heading";
 import Paragraph from "@arteneo/material-ui-slate/plugins/Paragraph";
@@ -86,6 +88,7 @@ export {
     serializeNode,
     serializeInlines,
     serializeElements,
+    getStyleAttr,
     Body,
     Br,
     Bold,
@@ -94,6 +97,7 @@ export {
     Underline,
     Color,
     Link,
+    Image,
     Nbsp,
     Heading,
     Paragraph,
