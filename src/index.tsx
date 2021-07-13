@@ -30,6 +30,7 @@ import {
     serializeNode,
     serializeInlines,
     serializeElements,
+    getStyleAttr,
 } from "@arteneo/material-ui-slate/utils/slate";
 import Body from "@arteneo/material-ui-slate/plugins/Body";
 import Br from "@arteneo/material-ui-slate/plugins/Br";
@@ -87,6 +88,7 @@ export {
     serializeNode,
     serializeInlines,
     serializeElements,
+    getStyleAttr,
     Body,
     Br,
     Bold,
