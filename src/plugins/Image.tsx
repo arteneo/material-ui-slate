@@ -60,6 +60,10 @@ const serializeElement = (node: ElementType): undefined | string => {
 };
 
 const deserializeElement = (element: Node, children: DeserializeType[]): DeserializeElementType => {
+    if (element.nodeName !== "IMG") {
+        return;
+    }
+
     const imageElement = element as HTMLImageElement;
     let align: undefined | ImageElementAlignType = undefined;
     const style = imageElement.style;
@@ -96,10 +100,7 @@ const deserializeElement = (element: Node, children: DeserializeType[]): Deseria
         paddingLeft: convertStyleToNumber(style.paddingLeft),
     };
 
-    switch (element.nodeName) {
-        case "IMG":
-            return jsx("element", jsxAttributes, children);
-    }
+    return jsx("element", jsxAttributes, children);
 };
 
 const convertStyleToNumber = (style: string): undefined | number => {
