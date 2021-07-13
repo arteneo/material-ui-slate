@@ -46,6 +46,7 @@ import Heading from "@arteneo/material-ui-slate/plugins/Heading";
 import Paragraph from "@arteneo/material-ui-slate/plugins/Paragraph";
 import OrderedList from "@arteneo/material-ui-slate/plugins/OrderedList";
 import UnorderedList from "@arteneo/material-ui-slate/plugins/UnorderedList";
+import TextAlign from "@arteneo/material-ui-slate/plugins/TextAlign";
 import Clear from "@arteneo/material-ui-slate/plugins/Clear";
 import Undo from "@arteneo/material-ui-slate/plugins/Undo";
 import Redo from "@arteneo/material-ui-slate/plugins/Redo";
@@ -103,6 +104,7 @@ export {
     Paragraph,
     OrderedList,
     UnorderedList,
+    TextAlign,
     Clear,
     Undo,
     Redo,

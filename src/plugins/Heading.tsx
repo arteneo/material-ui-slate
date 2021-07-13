@@ -1,8 +1,17 @@
 import React from "react";
-import { IconButton, IconButtonProps, Box, Popover, makeStyles, ClickAwayListener, Button } from "@material-ui/core";
+import {
+    IconButton,
+    IconButtonProps,
+    Box,
+    Popover,
+    makeStyles,
+    ClickAwayListener,
+    Button,
+    Omit,
+} from "@material-ui/core";
 import { Title } from "@material-ui/icons";
 import { RenderElementProps, useSlate } from "slate-react";
-import { toggleElement } from "@arteneo/material-ui-slate/utils/slate";
+import { getStyleAttr, toggleElement } from "@arteneo/material-ui-slate/utils/slate";
 import { useTranslation } from "react-i18next";
 import { jsx } from "slate-hyperscript";
 import SlatePluginInterface from "@arteneo/material-ui-slate/definitions/SlatePluginInterface";
@@ -10,6 +19,8 @@ import TextType from "@arteneo/material-ui-slate/definitions/TextType";
 import ElementType from "@arteneo/material-ui-slate/definitions/ElementType";
 import DeserializeElementType from "@arteneo/material-ui-slate/definitions/DeserializeElementType";
 import DeserializeType from "@arteneo/material-ui-slate/definitions/DeserializeType";
+import { getTextAlignStyle, TextAlignElementType } from "@arteneo/material-ui-slate/plugins/TextAlign";
+import ElementTypeType from "@arteneo/material-ui-slate/definitions/ElementTypeType";
 
 type HeadingElementType =
     | "heading-one"
@@ -21,57 +32,134 @@ type HeadingElementType =
 
 interface HeadingElementInterface {
     type: HeadingElementType;
+    textAlign?: TextAlignElementType;
     children: TextType[];
 }
 
 const serializeElement = (node: ElementType, children: string): undefined | string => {
+    let component: undefined | string = undefined;
+
     switch (node.type) {
         case "heading-one":
-            return "<h1>" + children + "</h1>";
+            component = "h1";
+            break;
         case "heading-two":
-            return "<h2>" + children + "</h2>";
+            component = "h2";
+            break;
         case "heading-three":
-            return "<h3>" + children + "</h3>";
+            component = "h3";
+            break;
         case "heading-four":
-            return "<h4>" + children + "</h4>";
+            component = "h4";
+            break;
         case "heading-five":
-            return "<h5>" + children + "</h5>";
+            component = "h5";
+            break;
         case "heading-six":
-            return "<h6>" + children + "</h6>";
+            component = "h6";
+            break;
     }
+
+    if (typeof component === "undefined") {
+        return;
+    }
+
+    const style = getTextAlignStyle(node);
+
+    return "<" + component + getStyleAttr(style) + ">" + children + "</" + component + ">";
 };
 
 const deserializeElement = (element: Node, children: DeserializeType[]): DeserializeElementType => {
+    let type: undefined | ElementTypeType = undefined;
+
     switch (element.nodeName) {
         case "H1":
-            return jsx("element", { type: "heading-one" }, children);
+            type = "heading-one";
+            break;
         case "H2":
-            return jsx("element", { type: "heading-two" }, children);
+            type = "heading-two";
+            break;
         case "H3":
-            return jsx("element", { type: "heading-three" }, children);
+            type = "heading-three";
+            break;
         case "H4":
-            return jsx("element", { type: "heading-four" }, children);
+            type = "heading-four";
+            break;
         case "H5":
-            return jsx("element", { type: "heading-five" }, children);
+            type = "heading-five";
+            break;
         case "H6":
-            return jsx("element", { type: "heading-six" }, children);
+            type = "heading-six";
+            break;
     }
+
+    if (typeof type === "undefined") {
+        return;
+    }
+
+    const attributes: Omit<HeadingElementInterface, "children"> = {
+        type,
+    };
+
+    const hElement = element as HTMLHeadingElement;
+    const style = hElement.style;
+
+    switch (style.textAlign) {
+        case "left":
+            attributes["textAlign"] = "text-align-left";
+            break;
+        case "center":
+            attributes["textAlign"] = "text-align-center";
+            break;
+        case "right":
+            attributes["textAlign"] = "text-align-right";
+            break;
+        case "justify":
+            attributes["textAlign"] = "text-align-justify";
+            break;
+    }
+
+    return jsx("element", attributes, children);
 };
 
 const renderElement = ({ attributes, children, element }: RenderElementProps): undefined | JSX.Element => {
     switch (element.type) {
         case "heading-one":
-            return <h1 {...attributes}>{children}</h1>;
+            return (
+                <h1 {...attributes} style={getTextAlignStyle(element)}>
+                    {children}
+                </h1>
+            );
         case "heading-two":
-            return <h2 {...attributes}>{children}</h2>;
+            return (
+                <h2 {...attributes} style={getTextAlignStyle(element)}>
+                    {children}
+                </h2>
+            );
         case "heading-three":
-            return <h3 {...attributes}>{children}</h3>;
+            return (
+                <h3 {...attributes} style={getTextAlignStyle(element)}>
+                    {children}
+                </h3>
+            );
         case "heading-four":
-            return <h4 {...attributes}>{children}</h4>;
+            return (
+                <h4 {...attributes} style={getTextAlignStyle(element)}>
+                    {children}
+                </h4>
+            );
         case "heading-five":
-            return <h5 {...attributes}>{children}</h5>;
+            return (
+                <h5 {...attributes} style={getTextAlignStyle(element)}>
+                    {children}
+                </h5>
+            );
         case "heading-six":
-            return <h6 {...attributes}>{children}</h6>;
+            return (
+                <h6 {...attributes} style={getTextAlignStyle(element)}>
+                    {children}
+                </h6>
+            );
     }
 };
 
